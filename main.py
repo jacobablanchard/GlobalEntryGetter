@@ -73,13 +73,28 @@ def should_send_notification(
         * We sent the last notification < 15 minutes ago, and the time available is still the same
     """
     if possible_appointment_datetime > current_best_appointment:
+        logger.info(
+            f"Shouldn't send notification - current best appointment is better. {current_best_appointment}"
+        )
         return False
 
-    if (
+    time_since_last_notification_sent = (
         datetime.now() - previous_notification.last_notification_sent
-        < timedelta(minutes=15)
-        and previous_notification.appointment == possible_appointment_datetime
+    )
+    possible_appointment_is_the_same_as_last_notification_appointment = (
+        previous_notification.appointment == possible_appointment_datetime
+    )
+    if (
+        time_since_last_notification_sent < timedelta(minutes=15)
+        and possible_appointment_is_the_same_as_last_notification_appointment
     ):
+        logger.info(
+            (
+                f"Shouldn't send notification - last notification was sent {round(time_since_last_notification_sent.seconds / 60,1)} "
+                f"minutes ago and potential appointment {'is' if possible_appointment_is_the_same_as_last_notification_appointment else 'is not'} "
+                f"the same as the last notified appointment"
+            )
+        )
         return False
 
     return True
@@ -94,6 +109,7 @@ def check_appointment_availability():
         params={"locationId": known_location_ids["dfw"]},
     ).json()
     if len(response["availableSlots"]) == 0:
+        logger.info("No new appointments")
         return
     possible_appointments = [
         Appointment.from_dict(appt) for appt in response["availableSlots"]
