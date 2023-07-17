@@ -33,7 +33,7 @@ logging_config = {
             "level": "DEBUG",
             "formatter": "standardFormatter",
             "filename": "contactLog.log",
-            "mode": "w",
+            "mode": "a",
         },
     },
     "root": {
