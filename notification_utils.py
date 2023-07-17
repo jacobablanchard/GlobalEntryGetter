@@ -13,7 +13,13 @@ subject = "New Appointment Found"
 
 
 def send_notification(current_appointment: datetime, better_appointment: Appointment):
-    body = f"There's a new appointment available for you:\nCurrent Appointment: {current_appointment:%A, %B %d %Y @ %I:%M %p}\nFound Appointment:{better_appointment.startTimestamp:%A, %B %d %Y @ %I:%M %p}\nOther data: {better_appointment}"
+    body = (
+        f"There's a new appointment available for you:\n"
+        "Current Appointment: {current_appointment:%A, %B %d %Y @ %I:%M %p}\n"
+        "Found Appointment:{better_appointment.startTimestamp:%A, %B %d %Y @ %I:%M %p}\n"
+        "Other data: {better_appointment}\n\n"
+        "https://ttp.cbp.dhs.gov/"
+    )
     if all(map(lambda p: p is not None), [sender, recipients, password]):
         send_email(body)
     else:
