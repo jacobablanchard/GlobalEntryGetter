@@ -9,11 +9,8 @@ import requests
 import schedule
 
 from Appointment import Appointment
-from notification_utils import send_notification
+from notification_utils import send_notification, send_pushbullet_notification
 from persistence import ProgramData
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 logging_config = {
@@ -124,7 +121,6 @@ def check_appointment_availability():
 schedule.every(5).minutes.do(check_appointment_availability)
 
 if __name__ == "__main__":
-    # check_appointment_availability()
     schedule.run_all()
     while True:
         schedule.run_pending()

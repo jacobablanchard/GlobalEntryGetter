@@ -1,25 +1,45 @@
+import json
 import os
 import smtplib
 from datetime import datetime
 from email.mime.text import MIMEText
-
+import logging
+import requests
+from settings import password, pushbullet_token, recipients, sender
 from Appointment import Appointment
 
+logger = logging.getLogger(__name__)
 subject = "New Appointment Found"
-
-sender = os.getenv("SENDER_EMAIL")
-recipients = [os.getenv("RECIPIENT_EMAIL")]
-password = os.getenv("SMTP_PASSWORD")
 
 
 def send_notification(current_appointment: datetime, better_appointment: Appointment):
     body = f"There's a new appointment available for you:\nCurrent Appointment: {current_appointment:%A, %B %d %Y @ %I:%M %p}\nFound Appointment:{better_appointment.startTimestamp:%A, %B %d %Y @ %I:%M %p}\nOther data: {better_appointment}"
+    if all(map(lambda p: p is not None), [sender, recipients, password]):
+        send_email(body)
+    else:
+        logger.info("Not sending email due to missing email config")
 
-    msg = MIMEText(body)
+    if pushbullet_token:
+        send_pushbullet_notification(body)
+    else:
+        logger.info("Not sending push due to missing pushbullet config")
+
+
+def send_email(bodyText: str):
+    msg = MIMEText(bodyText)
     msg["Subject"] = subject
     msg["From"] = sender
     msg["To"] = ", ".join(recipients)
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp_server:
         smtp_server.login(sender, password)
         smtp_server.sendmail(sender, recipients, msg.as_string())
-    print("Message sent!")
+
+
+def send_pushbullet_notification(bodyText: str):
+    url = "https://api.pushbullet.com/v2/pushes"
+
+    r = requests.post(
+        url,
+        data=json.dumps({"type": "note", "title": subject, "body": bodyText}),
+        headers={"Access-Token": pushbullet_token, "Content-type": "application/json"},
+    )
