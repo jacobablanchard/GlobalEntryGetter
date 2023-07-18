@@ -121,7 +121,7 @@ def check_appointment_availability():
     previous_notification = ProgramData.load_from_disk()
 
     if previous_notification is None or should_send_notification(
-        possible_appointments[0].startTimestamp, previous_notification.appointment
+        possible_appointments[0].startTimestamp, previous_notification
     ):
         contactLogger.info(
             f"Sending contact. Current appointment: {current_best_appointment}, Found Appointment: {possible_appointments[0]}"
