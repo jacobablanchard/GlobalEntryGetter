@@ -130,7 +130,7 @@ def check_appointment_availability():
         if previous_notification is None:
             previous_notification = ProgramData()
         previous_notification.last_notification_sent = datetime.now()
-        previous_notification.appointment = possible_appointments[0]
+        previous_notification.appointment = possible_appointments[0].startTimestamp
         previous_notification.to_disk()
 
 
