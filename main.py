@@ -134,7 +134,7 @@ def check_appointment_availability():
         previous_notification.to_disk()
 
 
-schedule.every(5).minutes.do(check_appointment_availability)
+schedule.every(1).minutes.do(check_appointment_availability)
 
 if __name__ == "__main__":
     schedule.run_all()
