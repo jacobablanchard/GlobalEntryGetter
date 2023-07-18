@@ -3,7 +3,7 @@ from datetime import datetime
 import os
 import pickle
 
-persistence_file_name = "./progamdata.dat"
+persistence_file_name = "./programdata.dat"
 
 
 @dataclass
