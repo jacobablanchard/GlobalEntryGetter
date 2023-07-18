@@ -111,7 +111,7 @@ def check_appointment_availability():
     if len(response["availableSlots"]) == 0:
         logger.info("No new appointments")
         return
-    possible_appointments = [
+    possible_appointments: List[Appointment] = [
         Appointment.from_dict(appt) for appt in response["availableSlots"]
     ]
     possible_appointments = sorted(
