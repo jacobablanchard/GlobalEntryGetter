@@ -4,6 +4,7 @@ import sys
 import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from typing import List
 
 import requests
 import schedule
@@ -58,7 +59,7 @@ logging_config = {
 logging.config.dictConfig(logging_config)
 
 base_url = "https://ttp.cbp.dhs.gov/schedulerapi/slot-availability"
-current_best_appointment = datetime.max
+current_best_appointment = datetime(2023, 7, 19, 11, 45)
 
 logger = logging.getLogger(__name__)
 contactLogger = logging.getLogger("contactLogger")
@@ -104,9 +105,10 @@ def check_appointment_availability():
     # Send a GET request to the Global Entry site
     logging.info("Running")
     known_location_ids = {"dfw": 5300, "arizona": 8100, "anchorage": 7540}
+    location_of_interest = known_location_ids["dfw"]
     response = requests.get(
         base_url,
-        params={"locationId": known_location_ids["dfw"]},
+        params={"locationId": location_of_interest},
     ).json()
     if len(response["availableSlots"]) == 0:
         logger.info("No new appointments")
