@@ -1,5 +1,7 @@
 # Global Entry Getter
 
+![Global entry getter logo](.readmeImages/GlobalEntryGetter.png)
+
 ## What does it do?
 
 This program will poll the global entry website to see if there is a newer appointment for Global Entry for you.
